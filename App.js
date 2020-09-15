@@ -12,6 +12,8 @@ import {
 
 const {Value, timing} = Animated;
 
+const AnimatedAntDesign = Animated.createAnimatedComponent(AntDesign);
+
 const App = () => {
   const [value, setValue] = useState(0);
   const animation = useRef(new Value(0)).current;
@@ -71,7 +73,11 @@ const App = () => {
             style={styles.circle}
             onPress={() => buttonHandler(value === 0 ? 1 : 0)}>
             <Animated.View style={[styles.circle, styles.button, {opacity}]}>
-              <AntDesign name="right" size={28} color="white" />
+              <AnimatedAntDesign
+                name="right"
+                size={28}
+                style={{color: backgroundColor}}
+              />
             </Animated.View>
           </TouchableOpacity>
         </Animated.View>
