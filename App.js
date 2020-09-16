@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useState, useRef} from 'react';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
@@ -12,6 +12,8 @@ import {
   Dimensions,
 } from 'react-native';
 
+import {colors} from './contants';
+
 const {width} = Dimensions.get('window');
 
 const {Value, timing} = Animated;
@@ -19,7 +21,10 @@ const {Value, timing} = Animated;
 const AnimatedAntDesign = Animated.createAnimatedComponent(AntDesign);
 
 const App = () => {
+  const [value, setValue] = useState(0);
   const animation = useRef(new Value(0)).current;
+
+  const {initialBgColor, circleColor, nextCircleColor} = colors[value];
 
   const rotateY = animation.interpolate({
     inputRange: [0, 0.5, 1],
@@ -43,12 +48,18 @@ const App = () => {
 
   const backgroundColor = animation.interpolate({
     inputRange: [0, 0.5, 0.501, 1],
-    outputRange: ['#F576AA', '#F576AA', '#000B92', '#000B92'],
+    outputRange: [initialBgColor, initialBgColor, circleColor, circleColor],
   });
 
   const circleBackgroundColor = animation.interpolate({
-    inputRange: [0, 0.5, 0.501, 1],
-    outputRange: ['#000B92', '#000B92', '#F576AA', '#F576AA'],
+    inputRange: [0, 0.5, 0.501, 0.9, 1],
+    outputRange: [
+      circleColor,
+      circleColor,
+      initialBgColor,
+      initialBgColor,
+      nextCircleColor,
+    ],
   });
 
   const opacity = animation.interpolate({
@@ -56,14 +67,18 @@ const App = () => {
     outputRange: [1, 0, 0, 1],
   });
 
-  const buttonHandler = () => {
-    animation.setValue(0);
-
+  const buttonHandler = async () => {
     timing(animation, {
       toValue: 1,
       duration: 1500,
       useNativeDriver: false,
-    }).start();
+    }).start(() => {
+      animation.setValue(0);
+      if (value === colors.length - 1) {
+        return setValue(0);
+      }
+      setValue(value + 1);
+    });
   };
 
   return (
