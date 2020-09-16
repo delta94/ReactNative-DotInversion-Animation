@@ -14,7 +14,7 @@ import {
 
 import {colors} from './contants';
 
-const {width} = Dimensions.get('window');
+const {width, height} = Dimensions.get('window');
 
 const {Value, timing} = Animated;
 
@@ -85,6 +85,10 @@ const App = () => {
     <View style={styles.container}>
       <StatusBar hidden />
       <Animated.View style={[styles.circleContainer, {backgroundColor}]}>
+        <Animated.View style={styles.headContainer}>
+          <Text style={styles.headText}>Storief</Text>
+          <Text style={styles.headText}>Skip</Text>
+        </Animated.View>
         <Animated.View style={[styles.contentContainer]}>
           <View style={[styles.textContainer]}>
             <Text style={styles.text}>Drag and drop to move</Text>
@@ -124,22 +128,34 @@ const styles = StyleSheet.create({
   },
   circleContainer: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: 'space-between',
     alignItems: 'center',
+    paddingVertical: 50,
     paddingBottom: 100,
   },
+  headContainer: {
+    width: width,
+    paddingHorizontal: 40,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  headText: {
+    fontSize: 18,
+    fontWeight: '700',
+  },
   contentContainer: {
-    paddingBottom: 50,
+    height: height / 2.4,
+    alignItems: 'flex-end',
     flexDirection: 'row',
   },
   textContainer: {
     width: width / 1.8,
+    color: '#fff',
   },
   text: {
     fontSize: 35,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#fff',
   },
   circle: {
     width: 100,
