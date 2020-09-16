@@ -1,4 +1,4 @@
-import React, {useState, useRef} from 'react';
+import React, {useRef} from 'react';
 
 import AntDesign from 'react-native-vector-icons/AntDesign';
 
@@ -8,19 +8,27 @@ import {
   StatusBar,
   TouchableOpacity,
   Animated,
+  Text,
+  Dimensions,
 } from 'react-native';
+
+const {width} = Dimensions.get('window');
 
 const {Value, timing} = Animated;
 
 const AnimatedAntDesign = Animated.createAnimatedComponent(AntDesign);
 
 const App = () => {
-  const [value, setValue] = useState(0);
   const animation = useRef(new Value(0)).current;
 
   const rotateY = animation.interpolate({
     inputRange: [0, 0.5, 1],
     outputRange: ['0deg', '-90deg', '-180deg'],
+  });
+
+  const iconRotateY = animation.interpolate({
+    inputRange: [0, 1],
+    outputRange: [`0deg`, '180deg'],
   });
 
   const scale = animation.interpolate({
@@ -44,15 +52,16 @@ const App = () => {
   });
 
   const opacity = animation.interpolate({
-    inputRange: [0, 0.1, 0.9, 1],
+    inputRange: [0, 0.01, 0.9, 1],
     outputRange: [1, 0, 0, 1],
   });
 
-  const buttonHandler = (number) => {
-    setValue(number);
+  const buttonHandler = () => {
+    animation.setValue(0);
+
     timing(animation, {
-      toValue: number,
-      duration: 2000,
+      toValue: 1,
+      duration: 1500,
       useNativeDriver: false,
     }).start();
   };
@@ -61,6 +70,11 @@ const App = () => {
     <View style={styles.container}>
       <StatusBar hidden />
       <Animated.View style={[styles.circleContainer, {backgroundColor}]}>
+        <Animated.View style={[styles.contentContainer]}>
+          <View style={[styles.textContainer]}>
+            <Text style={styles.text}>Drag and drop to move</Text>
+          </View>
+        </Animated.View>
         <Animated.View
           style={[
             styles.circle,
@@ -69,10 +83,13 @@ const App = () => {
               transform: [{perspective: 100}, {scale}, {rotateY}, {translateX}],
             },
           ]}>
-          <TouchableOpacity
-            style={styles.circle}
-            onPress={() => buttonHandler(value === 0 ? 1 : 0)}>
-            <Animated.View style={[styles.circle, styles.button, {opacity}]}>
+          <TouchableOpacity style={styles.circle} onPress={buttonHandler}>
+            <Animated.View
+              style={[
+                styles.circle,
+                styles.button,
+                {opacity, transform: [{rotateY: iconRotateY}]},
+              ]}>
               <AnimatedAntDesign
                 name="right"
                 size={28}
@@ -95,6 +112,19 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end',
     alignItems: 'center',
     paddingBottom: 100,
+  },
+  contentContainer: {
+    paddingBottom: 50,
+    flexDirection: 'row',
+  },
+  textContainer: {
+    width: width / 1.8,
+  },
+  text: {
+    fontSize: 35,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    color: '#fff',
   },
   circle: {
     width: 100,
