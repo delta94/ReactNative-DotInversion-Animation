@@ -24,7 +24,13 @@ const App = () => {
   const [value, setValue] = useState(0);
   const animation = useRef(new Value(0)).current;
 
-  const {initialBgColor, circleColor, nextCircleColor} = colors[value];
+  const {
+    initialBgColor,
+    circleColor,
+    nextCircleColor,
+    initialTextColor,
+    nextTextColor,
+  } = colors[value];
 
   const rotateY = animation.interpolate({
     inputRange: [0, 0.5, 1],
@@ -67,6 +73,16 @@ const App = () => {
     outputRange: [1, 0, 0, 1],
   });
 
+  const textColor = animation.interpolate({
+    inputRange: [0, 0.5, 0.501, 1],
+    outputRange: [
+      initialTextColor,
+      initialTextColor,
+      nextTextColor,
+      nextTextColor,
+    ],
+  });
+
   const buttonHandler = async () => {
     timing(animation, {
       toValue: 1,
@@ -86,12 +102,18 @@ const App = () => {
       <StatusBar hidden />
       <Animated.View style={[styles.circleContainer, {backgroundColor}]}>
         <Animated.View style={styles.headContainer}>
-          <Text style={styles.headText}>Storief</Text>
-          <Text style={styles.headText}>Skip</Text>
+          <Animated.Text style={[styles.headText, {color: textColor}]}>
+            Storief{' '}
+          </Animated.Text>
+          <Animated.Text style={[styles.headText, {color: textColor}]}>
+            Skip{' '}
+          </Animated.Text>
         </Animated.View>
         <Animated.View style={[styles.contentContainer]}>
           <View style={[styles.textContainer]}>
-            <Text style={styles.text}>Drag and drop to move</Text>
+            <Animated.Text style={[styles.text, {color: textColor}]}>
+              Drag and drop to move
+            </Animated.Text>
           </View>
         </Animated.View>
         <Animated.View
