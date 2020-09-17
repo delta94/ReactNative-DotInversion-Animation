@@ -21,3 +21,15 @@ export const colors = [
     nextTextColor: '#fff',
   },
 ];
+
+export const contents = [
+  {
+    title: 'Local news stories',
+  },
+  {
+    title: 'Choose your intrests',
+  },
+  {
+    title: 'Drag and drop to move',
+  },
+];

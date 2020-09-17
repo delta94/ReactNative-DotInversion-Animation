@@ -12,17 +12,19 @@ import {
   Dimensions,
 } from 'react-native';
 
-import {colors} from './contants';
+import {colors, contents} from './contants';
 
 const {width, height} = Dimensions.get('window');
 
-const {Value, timing} = Animated;
+const {Value, timing, parallel} = Animated;
 
 const AnimatedAntDesign = Animated.createAnimatedComponent(AntDesign);
 
 const App = () => {
   const [value, setValue] = useState(0);
+
   const animation = useRef(new Value(0)).current;
+  const contentAnimation = useRef(new Value(0)).current;
 
   const {
     initialBgColor,
@@ -83,17 +85,29 @@ const App = () => {
     ],
   });
 
+  const translateContent = contentAnimation.interpolate({
+    inputRange: [...Array(contents.length).keys()],
+    outputRange: [width * 2, 0, -width * 2],
+  });
+
   const buttonHandler = async () => {
-    timing(animation, {
-      toValue: 1,
-      duration: 1500,
-      useNativeDriver: false,
-    }).start(() => {
+    parallel([
+      timing(animation, {
+        toValue: 1,
+        duration: 1500,
+        useNativeDriver: false,
+      }),
+      timing(contentAnimation, {
+        toValue: value + 1,
+        duration: 1500,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
       animation.setValue(0);
       if (value === colors.length - 1) {
-        return setValue(0);
-      }
-      setValue(value + 1);
+        setValue(0);
+        contentAnimation.setValue(0);
+      } else setValue(value + 1);
     });
   };
 
@@ -109,12 +123,22 @@ const App = () => {
             Skip{' '}
           </Animated.Text>
         </Animated.View>
-        <Animated.View style={[styles.contentContainer]}>
-          <View style={[styles.textContainer]}>
-            <Animated.Text style={[styles.text, {color: textColor}]}>
-              Drag and drop to move
-            </Animated.Text>
-          </View>
+        <Animated.View
+          style={[
+            styles.contentContainer,
+            {
+              transform: [{translateX: translateContent}],
+            },
+          ]}>
+          {contents.map((element, index) => (
+            <View
+              style={[styles.textContainer, {width: width * 2}]}
+              key={index}>
+              <Animated.Text style={[styles.text, {color: textColor}]}>
+                {element.title}
+              </Animated.Text>
+            </View>
+          ))}
         </Animated.View>
         <Animated.View
           style={[
