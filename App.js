@@ -131,12 +131,12 @@ const App = () => {
             },
           ]}>
           {contents.map((element, index) => (
-            <View
-              style={[styles.textContainer, {width: width * 2}]}
-              key={index}>
-              <Animated.Text style={[styles.text, {color: textColor}]}>
-                {element.title}
-              </Animated.Text>
+            <View style={[styles.textContainer]} key={index}>
+              <View style={{width: width / 2}}>
+                <Animated.Text style={[styles.text, {color: textColor}]}>
+                  {element.title}
+                </Animated.Text>
+              </View>
             </View>
           ))}
         </Animated.View>
@@ -197,6 +197,9 @@ const styles = StyleSheet.create({
   textContainer: {
     width: width / 1.8,
     color: '#fff',
+    width: width * 2,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   text: {
     fontSize: 35,
